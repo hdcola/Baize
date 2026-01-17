@@ -24,7 +24,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         setModel(
           (result.model as string) ||
             import.meta.env.VITE_MODEL ||
-            "gemini-2.0-flash-exp",
+            "gemini-3-flash",
         );
         setLanguage(
           (result.language as string) || import.meta.env.VITE_LANGUAGE || "en",
