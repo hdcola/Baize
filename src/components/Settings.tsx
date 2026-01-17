@@ -35,7 +35,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
 
   const handleSave = () => {
     chrome.storage.local.set({ apiKey, baseUrl, model, language }, () => {
-      alert("Settings saved!");
+      onBack();
     });
   };
 
