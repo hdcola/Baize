@@ -1,10 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Send,
   Settings as SettingsIcon,
   Loader2,
   Play,
-  CheckCircle,
+  Paperclip,
+  X,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useBaizeChat } from "../hooks/use-baize-chat";
 
@@ -22,6 +24,8 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
     config,
   } = useBaizeChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,6 +34,34 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    console.log("[Chat] File input change:", selectedFiles);
+    if (selectedFiles && selectedFiles.length > 0) {
+        const newFiles = Array.from(selectedFiles);
+        console.log("[Chat] processed files:", newFiles);
+        setAttachments((prev) => {
+          const updated = [...prev, ...newFiles];
+          console.log("[Chat] updated attachments:", updated);
+          return updated;
+        });
+    }
+    // Reset input so same file can be selected again if needed
+    if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const onFormSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      handleSubmit(e, attachments);
+      setAttachments([]);
+  };
 
   const renderMessageContent = (msg: any) => {
     if (typeof msg.content === "string") {
@@ -41,6 +73,17 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
           {msg.content.map((part: any, idx: number) => {
             if (part.type === "text") {
               return <div key={idx}>{part.text}</div>;
+            }
+            if (part.type === "image") {
+                return (
+                    <div key={idx} style={{ marginTop: '8px', marginBottom: '8px' }}>
+                        <img 
+                            src={part.image} 
+                            alt="Attached image" 
+                            style={{ maxWidth: '100%', borderRadius: '8px', maxHeight: '300px' }} 
+                        />
+                    </div>
+                )
             }
             if (part.type === "tool-call") {
               return (
@@ -214,62 +257,127 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
             {renderMessageContent(msg)}
           </div>
         ))}
-        {/* Render tool results specifically if we want to show them inline? 
-            Visual choice: usually we fold them into the flow. 
-            Step by step visualization is nice. 
-            For now, standard rendering of message history is fine. 
-        */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          padding: "12px",
-          borderTop: "1px solid var(--border-color)",
-          background: "var(--bg-color)",
-        }}
+      {/* Input Area */}
+      <div
+          style={{
+            borderTop: "1px solid var(--border-color)",
+            background: "var(--bg-color)",
+            padding: "12px",
+          }}
       >
-        <div style={{ display: "flex", gap: "8px" }}>
-          <input
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Ask Baize to do something..."
+        {/* Thumbnails Preview */}
+        {attachments.length > 0 && (
+            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '8px', paddingBottom: '4px' }}>
+                {attachments.map((file, idx) => (
+                    <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
+                        <img
+                            src={URL.createObjectURL(file)}
+                            alt="preview"
+                            style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #ddd' }}
+                        />
+                        <button
+                            onClick={() => removeAttachment(idx)}
+                            style={{
+                                position: 'absolute',
+                                top: '-6px',
+                                right: '-6px',
+                                background: 'gray',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '18px',
+                                height: '18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                fontSize: '10px'
+                            }}
+                        >
+                            <X size={12} />
+                        </button>
+                    </div>
+                ))}
+            </div>
+        )}
+
+        <form
+            onSubmit={onFormSubmit}
             style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid var(--border-color)",
-              background: "var(--input-bg)",
-              color: "inherit",
-              outline: "none",
+            padding: 0,
+            margin: 0
             }}
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            style={{
-              background: "var(--primary-color)",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "0 12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: isLoading || !input.trim() ? 0.6 : 1,
-            }}
-          >
-            {isLoading ? (
-              <Loader2 size={20} className="animate-spin" />
-            ) : (
-              <Send size={20} />
-            )}
-          </button>
-        </div>
-      </form>
+        >
+            <div style={{ display: "flex", gap: "8px", alignItems: 'flex-end' }}>
+            <input
+                type="file"
+                multiple
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileSelect}
+            />
+            <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '8px',
+                    color: 'var(--text-color)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}
+                disabled={isLoading}
+                title="Attach Image"
+            >
+                <Paperclip size={20} />
+            </button>
+            <input
+                value={input}
+                onChange={handleInputChange}
+                placeholder="Ask Baize to do something..."
+                style={{
+                flex: 1,
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid var(--border-color)",
+                background: "var(--input-bg)",
+                color: "inherit",
+                outline: "none",
+                minHeight: "44px"
+                }}
+                disabled={isLoading}
+            />
+            <button
+                type="submit"
+                disabled={isLoading || (!input.trim() && attachments.length === 0)}
+                style={{
+                background: "var(--primary-color)",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                padding: "0 12px",
+                height: "44px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: isLoading || (!input.trim() && attachments.length === 0) ? 0.6 : 1,
+                }}
+            >
+                {isLoading ? (
+                <Loader2 size={20} className="animate-spin" />
+                ) : (
+                <Send size={20} />
+                )}
+            </button>
+            </div>
+        </form>
+      </div>
     </div>
   );
 };
