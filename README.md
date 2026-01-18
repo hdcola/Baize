@@ -11,7 +11,8 @@ MatePI is a powerful AI-powered browser assistant designed to be a calm command 
   - **Text-to-Speech**: Listen to AI responses with high-quality audio playback.
 - **Context Aware**: Instantly summarize the current page, turn articles into study notes, or draft replies based on visible content.
 - **Attachment Support**: Drag and drop images to analyze visual content alongside your queries.
-- **Customizable**: Configure API keys, base URLs, models, and preferred languages (English/Chinese) in the settings.
+- **Internationalization (i18n)**: 🌐 Seamlessly switch between English, Chinese (Simplified), and French with real-time UI updates.
+- **Customizable**: Configure API keys, base URLs, models, and preferred languages in the settings.
 
 ## Tech Stack 🛠️
 
@@ -22,6 +23,7 @@ MatePI is built with a modern web extension architecture:
 - **AI Integration**: [Vercel AI SDK](https://sdk.vercel.ai/docs) - Unified interface for connecting with LLMs.
 - **Styling**: Vanilla CSS with a focus on modern, semantic design tokens and smooth animations.
 - **Icons**: [Lucide React](https://lucide.dev/) - Beautiful, consistent icons.
+- **Internationalization**: [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) - Robust i18n framework.
 - **Markdown**: `react-markdown` for rendering rich text responses.
 
 ## Getting Started
@@ -54,7 +56,7 @@ Open the extension settings (gear icon) to configure:
 - **API Key**: Your Google Gemini or OpenAI API key.
 - **ElevenLabs Key**: Optional, for voice features.
 - **Model**: Choose your preferred model (e.g., `gemini-2.0-flash-exp`).
-- **Language**: Switch between English and Chinese interface/responses.
+- **Language**: Switch between English, Chinese (Simplified), and French. The interface and AI responses will adapt instantly.
 
 ---
 

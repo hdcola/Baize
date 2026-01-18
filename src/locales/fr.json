@@ -1,0 +1,56 @@
+{
+  "common": {
+    "beta": "BÊTA",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "setup": "CONFIG"
+  },
+  "chat": {
+    "welcome": "Bienvenue sur MatePI",
+    "configureMsg": "Veuillez configurer votre fournisseur d'IA pour commencer.",
+    "goToSettings": "Aller aux paramètres",
+    "startSession": "Démarrer une session",
+    "startSubtitle": "Choisissez une invite ou décrivez ce que vous voulez que MatePI fasse.",
+    "placeholder": "Demandez à MatePI de faire quelque chose...",
+    "toolCall": "Appel d'outil",
+    "playAudio": "Lire l'audio",
+    "playing": "Lecture...",
+    "play": "Lire",
+    "prompts": {
+      "summary": "Résumer la page actuelle",
+      "actionItems": "Extraire les points d'action",
+      "reply": "Rédiger une réponse à l'article",
+      "studyNotes": "Transformer en notes d'étude"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "sections": {
+      "general": "Général",
+      "ai": "Services IA",
+      "voice": "Voix & Parole"
+    },
+    "labels": {
+      "language": "Langue",
+      "apiKey": "Clé API",
+      "baseUrl": "URL de base",
+      "model": "Modèle",
+      "elevenLabsKey": "Clé API ElevenLabs",
+      "voiceId": "ID de voix"
+    },
+    "placeholders": {
+      "apiKey": "sk-...",
+      "baseUrl": "https://api.openai.com/v1",
+      "elevenLabsKey": "Entrez votre clé API",
+      "voiceId": "Entrez l'ID de voix"
+    },
+    "save": "Enregistrer les paramètres",
+    "saved": "Paramètres enregistrés !"
+  },
+  "voice": {
+    "start": "Commencer l'enregistrement",
+    "stop": "Arrêter l'enregistrement",
+    "transcribing": "Transcription..."
+  }
+}

@@ -12,16 +12,17 @@ import ReactMarkdown from "react-markdown";
 import { useBaizeChat } from "../hooks/use-baize-chat";
 import { VoiceControl } from "./VoiceControl";
 import { elevenLabsService } from "../lib/elevenlabs";
+import { useTranslation } from "react-i18next";
 
 interface ChatProps {
   onOpenSettings: () => void;
 }
 
-const PROMPT_SUGGESTIONS = [
-  "Summarize the current page",
-  "Extract key action items",
-  "Draft a reply to the article",
-  "Turn this into study notes",
+const PROMPT_KEYS = [
+  "chat.prompts.summary",
+  "chat.prompts.actionItems",
+  "chat.prompts.reply",
+  "chat.prompts.studyNotes",
 ];
 
 export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
@@ -34,6 +35,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
     config,
     sendMessage,
   } = useBaizeChat();
+  const { t } = useTranslation();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(
     null,
@@ -179,17 +181,15 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
     return (
       <div className="panel">
         <div className="empty-state">
-          <span className="pill">Setup</span>
-          <h2 className="panel-title">Welcome to MatePI</h2>
-          <p className="panel-subtitle">
-            Please configure your AI provider to get started.
-          </p>
+          <span className="pill">{t("common.setup")}</span>
+          <h2 className="panel-title">{t("chat.welcome")}</h2>
+          <p className="panel-subtitle">{t("chat.configureMsg")}</p>
           <button
             onClick={onOpenSettings}
             className="primary-btn"
             type="button"
           >
-            Go to Settings
+            {t("chat.goToSettings")}
           </button>
         </div>
       </div>
@@ -210,7 +210,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
         <div className="panel-title-block">
           <div className="panel-title-row">
             <h1 className="panel-title">MatePI</h1>
-            <span className="badge">Beta</span>
+            <span className="badge">{t("common.beta")}</span>
           </div>
         </div>
         <button
@@ -232,19 +232,17 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
         <div className="messages" ref={messagesContainerRef}>
           {messages.length === 0 && (
             <div className="empty-chat">
-              <p className="empty-title">Start a session</p>
-              <p className="empty-subtitle">
-                Pick a prompt or describe what you want MatePI to handle.
-              </p>
+              <p className="empty-title">{t("chat.startSession")}</p>
+              <p className="empty-subtitle">{t("chat.startSubtitle")}</p>
               <div className="prompt-grid">
-                {PROMPT_SUGGESTIONS.map((prompt) => (
+                {PROMPT_KEYS.map((key) => (
                   <button
-                    key={prompt}
+                    key={key}
                     type="button"
                     className="prompt-chip"
-                    onClick={() => handlePromptClick(prompt)}
+                    onClick={() => handlePromptClick(t(key))}
                   >
-                    {prompt}
+                    {t(key)}
                   </button>
                 ))}
               </div>
@@ -272,12 +270,12 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                     {playingMessageIndex === idx ? (
                       <>
                         <Loader2 size={14} className="animate-spin" />
-                        Playing...
+                        {t("chat.playing")}
                       </>
                     ) : (
                       <>
                         <Volume2 size={14} />
-                        Play
+                        {t("chat.play")}
                       </>
                     )}
                   </button>
@@ -333,7 +331,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                 ref={textInputRef}
                 value={input}
                 onChange={handleInputChange}
-                placeholder="Ask MatePI to do something..."
+                placeholder={t("chat.placeholder")}
                 className="input-field"
                 disabled={isLoading}
               />

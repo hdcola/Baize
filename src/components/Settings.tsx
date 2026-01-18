@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
 import { Save, ArrowLeft, Eye, EyeOff, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface SettingsProps {
   onBack: () => void;
 }
 
 export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
+  const { t, i18n } = useTranslation();
   const [apiKey, setApiKey] = useState("");
 
   const [elevenLabsKey, setElevenLabsKey] = useState("");
@@ -69,6 +70,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
     chrome.storage.local.set(
       { apiKey, elevenLabsKey, baseUrl, model, language, selectedDeviceId },
       () => {
+        i18n.changeLanguage(language);
         onBack();
       },
     );
@@ -87,11 +89,8 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         </button>
         <div className="panel-title-block">
           <div className="panel-title-row">
-            <h2
-              className="panel-title"
-              style={{ fontSize: "1.25rem", margin: 0 }}
-            >
-              Settings
+            <h2 style={{ fontSize: "1.25rem", margin: 0 }}>
+              {t("settings.title")}
             </h2>
           </div>
         </div>
@@ -99,10 +98,12 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
 
       <div className="panel-body settings-body">
         <section className="settings-section fade-rise">
-          <div className="settings-section-title">General</div>
+          <div className="settings-section-title">
+            {t("settings.sections.general")}
+          </div>
           <div className="settings-row">
             <label htmlFor="language-select" className="field-label">
-              Language
+              {t("settings.labels.language")}
             </label>
             <div className="field-control">
               <select
@@ -113,6 +114,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
               >
                 <option value="en">English</option>
                 <option value="zh">Chinese (Simplified)</option>
+                <option value="fr">French</option>
               </select>
               <ChevronDown size={16} className="field-icon" />
             </div>
@@ -120,10 +122,12 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         </section>
 
         <section className="settings-section fade-rise">
-          <div className="settings-section-title">AI Services</div>
+          <div className="settings-section-title">
+            {t("settings.sections.ai")}
+          </div>
           <div className="settings-row">
             <label htmlFor="api-key" className="field-label">
-              API Key
+              {t("settings.labels.apiKey")}
             </label>
             <div className="field-control field-control--with-action">
               <input
@@ -131,7 +135,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                 type={showApiKey ? "text" : "password"}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
+                placeholder={t("settings.placeholders.apiKey")}
                 className="field-input"
               />
               <button
@@ -147,7 +151,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
 
           <div className="settings-row">
             <label htmlFor="base-url" className="field-label">
-              Base URL
+              {t("settings.labels.baseUrl")}
             </label>
             <div className="field-control">
               <input
@@ -155,7 +159,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                 type="text"
                 value={baseUrl}
                 onChange={(e) => setBaseUrl(e.target.value)}
-                placeholder="https://api.openai.com/v1"
+                placeholder={t("settings.placeholders.baseUrl")}
                 className="field-input"
               />
             </div>
@@ -163,7 +167,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
 
           <div className="settings-row">
             <label htmlFor="model-name" className="field-label">
-              Model Name
+              {t("settings.labels.model")}
             </label>
             <div className="field-control">
               <input
@@ -179,10 +183,12 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         </section>
 
         <section className="settings-section fade-rise">
-          <div className="settings-section-title">Voice and Speech</div>
+          <div className="settings-section-title">
+            {t("settings.sections.voice")}
+          </div>
           <div className="settings-row">
             <label htmlFor="elevenlabs-key" className="field-label">
-              ElevenLabs Key
+              {t("settings.labels.elevenLabsKey")}
             </label>
             <div className="field-control field-control--with-action">
               <input
@@ -190,7 +196,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                 type={showElevenLabsKey ? "text" : "password"}
                 value={elevenLabsKey}
                 onChange={(e) => setElevenLabsKey(e.target.value)}
-                placeholder="Enter your ElevenLabs API key"
+                placeholder={t("settings.placeholders.elevenLabsKey")}
                 className="field-input"
               />
               <button
@@ -233,7 +239,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           type="button"
         >
           <Save size={18} />
-          Save Settings
+          {t("settings.save")}
         </button>
       </div>
     </div>

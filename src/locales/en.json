@@ -1,0 +1,56 @@
+{
+  "common": {
+    "beta": "BETA",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "setup": "SETUP"
+  },
+  "chat": {
+    "welcome": "Welcome to MatePI",
+    "configureMsg": "Please configure your AI provider to get started.",
+    "goToSettings": "Go to Settings",
+    "startSession": "Start a session",
+    "startSubtitle": "Pick a prompt or describe what you want MatePI to handle.",
+    "placeholder": "Ask MatePI to do something...",
+    "toolCall": "Tool call",
+    "playAudio": "Play audio",
+    "playing": "Playing...",
+    "play": "Play",
+    "prompts": {
+      "summary": "Summarize the current page",
+      "actionItems": "Extract key action items",
+      "reply": "Draft a reply to the article",
+      "studyNotes": "Turn this into study notes"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "general": "General",
+      "ai": "AI Services",
+      "voice": "Voice & Speech"
+    },
+    "labels": {
+      "language": "Language",
+      "apiKey": "API Key",
+      "baseUrl": "Base URL",
+      "model": "Model",
+      "elevenLabsKey": "ElevenLabs API Key",
+      "voiceId": "Voice ID"
+    },
+    "placeholders": {
+      "apiKey": "sk-...",
+      "baseUrl": "https://api.openai.com/v1",
+      "elevenLabsKey": "Enter your API key",
+      "voiceId": "Enter Voice ID"
+    },
+    "save": "Save Settings",
+    "saved": "Settings saved!"
+  },
+  "voice": {
+    "start": "Start recording",
+    "stop": "Stop recording",
+    "transcribing": "Transcribing..."
+  }
+}

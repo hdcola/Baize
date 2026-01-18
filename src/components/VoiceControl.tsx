@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Mic, Loader2, StopCircle } from "lucide-react";
 import { elevenLabsService } from "../lib/elevenlabs";
+import { useTranslation } from "react-i18next";
 
 interface VoiceControlProps {
   onTranscription: (text: string) => void;
@@ -9,6 +10,7 @@ interface VoiceControlProps {
 export const VoiceControl: React.FC<VoiceControlProps> = ({
   onTranscription,
 }) => {
+  const { t } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
@@ -132,7 +134,7 @@ export const VoiceControl: React.FC<VoiceControlProps> = ({
         onClick={isRecording ? stopRecording : startRecording}
         disabled={isTranscribing}
         className={buttonClassName}
-        title={isRecording ? "Stop recording" : "Start recording"}
+        title={isRecording ? t("voice.stop") : t("voice.start")}
       >
         {isTranscribing ? (
           <Loader2 size={20} className="animate-spin" />
