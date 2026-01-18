@@ -86,13 +86,14 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           <ArrowLeft size={18} />
         </button>
         <div className="panel-title-block">
-          <span className="pill">Configuration</span>
           <div className="panel-title-row">
-            <h2 className="panel-title">Settings</h2>
+            <h2
+              className="panel-title"
+              style={{ fontSize: "1.25rem", margin: 0 }}
+            >
+              Settings
+            </h2>
           </div>
-          <p className="panel-subtitle">
-            Tune providers, voice, and shortcuts for your flow.
-          </p>
         </div>
       </header>
 

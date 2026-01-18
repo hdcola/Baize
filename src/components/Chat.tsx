@@ -199,23 +199,31 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
 
   return (
     <div className="panel chat-panel">
-      <header className="panel-header">
+      <header
+        className="panel-header"
+        style={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+        }}
+      >
         <div className="panel-title-block">
-          <span className="pill">Baize workspace</span>
           <div className="panel-title-row">
             <h1 className="panel-title">Baize</h1>
             <span className="badge">Beta</span>
           </div>
-          <p className="panel-subtitle">
-            A calm command center for the web. Ask for summaries, actions, and
-            quick research.
-          </p>
         </div>
         <button
           onClick={onOpenSettings}
           className="icon-btn"
           type="button"
           aria-label="Open settings"
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+          }}
         >
           <SettingsIcon size={18} />
         </button>
