@@ -327,16 +327,15 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
               >
                 <Paperclip size={20} />
               </button>
-              <input
-                ref={textInputRef}
-                value={input}
-                onChange={handleInputChange}
-                placeholder={t("chat.placeholder")}
-                className="input-field"
-                disabled={isLoading}
-              />
-              <div className="composer-actions">
-                <VoiceControl onTranscription={handleVoiceTranscription} />
+              <div className="input-wrapper">
+                <input
+                  ref={textInputRef}
+                  value={input}
+                  onChange={handleInputChange}
+                  placeholder={t("chat.placeholder")}
+                  className="input-field"
+                  disabled={isLoading}
+                />
                 <button
                   type="submit"
                   className="primary-btn send-btn"
@@ -351,6 +350,9 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                     <Send size={20} />
                   )}
                 </button>
+              </div>
+              <div className="composer-actions">
+                <VoiceControl onTranscription={handleVoiceTranscription} />
               </div>
             </div>
           </form>

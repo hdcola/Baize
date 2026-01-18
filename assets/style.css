@@ -526,15 +526,24 @@ a {
   gap: 8px;
 }
 
+.input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .input-field {
   flex: 1;
-  padding: 10px 12px;
+  padding: 10px 54px 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--stroke);
   background: var(--input-bg);
   color: inherit;
   outline: none;
   min-height: 44px;
+  min-width: 100px;
+  width: 100%;
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease;
@@ -546,12 +555,12 @@ a {
 
 .input-field:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  /* box-shadow: 0 0 0 3px var(--accent-soft); */
 }
 
 .primary-btn {
-  background: var(--accent);
-  color: #ffffff;
+  /* background: var(--accent); */
+  color: var(--accent);
   border: none;
   border-radius: 12px;
   padding: 10px 12px;
@@ -560,7 +569,7 @@ a {
   justify-content: center;
   gap: 8px;
   font-weight: 600;
-  box-shadow: var(--shadow-soft);
+  /* box-shadow: var(--shadow-soft); */
   transition:
     transform 150ms ease,
     box-shadow 150ms ease,
@@ -568,22 +577,32 @@ a {
 }
 
 .primary-btn:hover {
-  background: var(--accent-strong);
+  /* background: var(--accent-strong); */
   transform: translateY(-1px);
-  box-shadow: 0 18px 30px -22px rgba(255, 106, 61, 0.7);
+  /* box-shadow: 0 18px 30px -22px rgba(255, 106, 61, 0.7); */
 }
 
 .primary-btn:disabled {
+  color: gray;
   opacity: 0.6;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
 }
 
-.send-btn {
-  width: 42px;
-  height: 42px;
+.input-wrapper .send-btn {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 36px;
+  height: 36px;
   padding: 0;
+  border-radius: 10px;
+  transform: none;
+}
+
+.input-wrapper .send-btn:hover {
+  transform: none;
 }
 
 .attachments {
