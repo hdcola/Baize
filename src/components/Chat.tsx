@@ -137,7 +137,6 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                 <summary className="tool-call-summary">
                   <Terminal size={14} />
                   <span className="tool-call-name">{part.toolName}</span>
-                  <span className="tool-call-pill">Tool call</span>
                 </summary>
                 <pre className="tool-call-payload">
                   {JSON.stringify(part.args ?? part.input, null, 2)}
@@ -181,7 +180,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
       <div className="panel">
         <div className="empty-state">
           <span className="pill">Setup</span>
-          <h2 className="panel-title">Welcome to Baize</h2>
+          <h2 className="panel-title">Welcome to MatePI</h2>
           <p className="panel-subtitle">
             Please configure your AI provider to get started.
           </p>
@@ -210,7 +209,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
       >
         <div className="panel-title-block">
           <div className="panel-title-row">
-            <h1 className="panel-title">Baize</h1>
+            <h1 className="panel-title">MatePI</h1>
             <span className="badge">Beta</span>
           </div>
         </div>
@@ -235,7 +234,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
             <div className="empty-chat">
               <p className="empty-title">Start a session</p>
               <p className="empty-subtitle">
-                Pick a prompt or describe what you want Baize to handle.
+                Pick a prompt or describe what you want MatePI to handle.
               </p>
               <div className="prompt-grid">
                 {PROMPT_SUGGESTIONS.map((prompt) => (
@@ -334,7 +333,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                 ref={textInputRef}
                 value={input}
                 onChange={handleInputChange}
-                placeholder="Ask Baize to do something..."
+                placeholder="Ask MatePI to do something..."
                 className="input-field"
                 disabled={isLoading}
               />
