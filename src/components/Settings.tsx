@@ -7,16 +7,23 @@ interface SettingsProps {
 
 export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const [apiKey, setApiKey] = useState("");
+  const [elevenLabsKey, setElevenLabsKey] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
   const [model, setModel] = useState("gemini-2.0-flash-exp");
   const [language, setLanguage] = useState("en");
+  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
   useEffect(() => {
+    // Load settings from storage
     chrome.storage.local.get(
-      ["apiKey", "baseUrl", "model", "language"],
+      ["apiKey", "elevenLabsKey", "baseUrl", "model", "language", "selectedDeviceId"],
       (result) => {
         setApiKey(
           (result.apiKey as string) || import.meta.env.VITE_API_KEY || "",
+        );
+        setElevenLabsKey(
+          (result.elevenLabsKey as string) || import.meta.env.VITE_ELEVENLABS_API_KEY || "",
         );
         setBaseUrl(
           (result.baseUrl as string) || import.meta.env.VITE_BASE_URL || "",
@@ -29,14 +36,32 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         setLanguage(
           (result.language as string) || import.meta.env.VITE_LANGUAGE || "en",
         );
+        setSelectedDeviceId((result.selectedDeviceId as string) || "");
       },
     );
+
+    // Load available audio devices
+    const loadDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(
+          (device) => device.kind === "audioinput",
+        );
+        setAudioDevices(audioInputs);
+      } catch (error) {
+        console.error("Failed to enumerate devices:", error);
+      }
+    };
+    loadDevices();
   }, []);
 
   const handleSave = () => {
-    chrome.storage.local.set({ apiKey, baseUrl, model, language }, () => {
-      onBack();
-    });
+    chrome.storage.local.set(
+      { apiKey, elevenLabsKey, baseUrl, model, language, selectedDeviceId },
+      () => {
+        onBack();
+      },
+    );
   };
 
   return (
@@ -70,6 +95,28 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
           placeholder="Enter your API Key"
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid var(--border-color)",
+            background: "var(--input-bg)",
+            color: "inherit",
+          }}
+        />
+      </div>
+
+      <div style={{ marginBottom: "16px" }}>
+        <label
+          style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}
+        >
+          ElevenLabs API Key
+        </label>
+        <input
+          type="password"
+          value={elevenLabsKey}
+          onChange={(e) => setElevenLabsKey(e.target.value)}
+          placeholder="Enter your ElevenLabs API Key"
           style={{
             width: "100%",
             padding: "8px",
@@ -125,7 +172,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         />
       </div>
 
-      <div style={{ marginBottom: "24px" }}>
+      <div style={{ marginBottom: "16px" }}>
         <label
           style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}
         >
@@ -145,6 +192,33 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         >
           <option value="en">English</option>
           <option value="zh">Chinese (Simplified)</option>
+        </select>
+      </div>
+
+      <div style={{ marginBottom: "24px" }}>
+        <label
+          style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}
+        >
+          Microphone
+        </label>
+        <select
+          value={selectedDeviceId}
+          onChange={(e) => setSelectedDeviceId(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid var(--border-color)",
+            background: "var(--input-bg)",
+            color: "inherit",
+          }}
+        >
+          <option value="">Default</option>
+          {audioDevices.map((device) => (
+            <option key={device.deviceId} value={device.deviceId}>
+              {device.label || `Device ${device.deviceId.slice(0, 8)}`}
+            </option>
+          ))}
         </select>
       </div>
 
