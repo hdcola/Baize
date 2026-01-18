@@ -32,12 +32,41 @@ export function useBaizeChat() {
   }, []);
 
   const handleSubmit = useCallback(
-    async (e?: React.FormEvent) => {
+    async (e?: React.FormEvent, attachments?: File[]) => {
       e?.preventDefault();
-      if (!input.trim() || !config) return;
+      if (
+        (!input.trim() && (!attachments || attachments.length === 0)) ||
+        !config
+      )
+        return;
 
       setIsLoading(true);
-      const userMessage = { role: "user", content: input };
+
+      const contentParts: any[] = [];
+      if (input.trim()) {
+        contentParts.push({ type: "text", text: input });
+      }
+
+      if (attachments && attachments.length > 0) {
+        for (const file of attachments) {
+          const base64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const result = reader.result as string;
+              // Remove data URL prefix (e.g., "data:image/png;base64,") if the API expects just base64,
+              // BUT the AI SDK usually expects the full data URL or handles it.
+              // Checking AI SDK docs or common usage: usually `image` part takes a URL or base64.
+              // For `experimental_attachments` or standard `content` array with `image` type:
+              // Vercel AI SDK `CoreMessage` `UserContent` `ImagePart` expects `image` which is Uint8Array | ArrayBuffer | string (url/base64).
+              resolve(result);
+            };
+            reader.readAsDataURL(file);
+          });
+          contentParts.push({ type: "image", image: base64 });
+        }
+      }
+
+      const userMessage = { role: "user", content: contentParts };
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
 
@@ -113,8 +142,6 @@ export function useBaizeChat() {
             return newMessages;
           });
         }
-
-        // streamText handles tool execution automatically when multiple steps are allowed.
       } catch (error) {
         console.error(error);
         setMessages((prev) => [
@@ -127,28 +154,6 @@ export function useBaizeChat() {
     },
     [input, config, messages],
   );
-
-  // Rethink: implementing robust streaming + tool calls manually is error prone.
-  // I will use 'useChat' but with a custom 'fetch' that calls my local handle function.
-  // OR simply let's stick to the manual implementation but keeping it simple:
-  // Wait for full response? No, user wants streaming.
-
-  // Let's go with a simpler Manual Implementation that works:
-  // We will call `streamText` and just set the messages to what `result.response.messages` returns (helper)
-  // Unfortunately `streamText` returns a result helper, but the stream is async.
-
-  // Revised Strategy:
-  // Use `useChat` from `@ai-sdk/react`.
-  // Mock the `fetch` function passed to `useChat`? No, `useChat` uses `fetch` internally to call an API.
-  // We can pass `api: '/api/chat'` and intercept the network request? No.
-
-  // We can use `useChat` with a custom `mutation`? No.
-
-  // Okay, I will implement a simpler `useBaizeChat` using `streamText` in a simplified way:
-  // 1. Append User Message.
-  // 2. Call `streamText`.
-  // 3. Iterate `result.fullStream`.
-  // 4. Update a generic "Assistant" message state that accumulates text and tool calls.
 
   return {
     messages,
