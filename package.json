@@ -22,8 +22,9 @@
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "zod": "^4.3.5",
-    "turndown": "^7.2.2"
+    "react-markdown": "^10.1.0",
+    "turndown": "^7.2.2",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.33",

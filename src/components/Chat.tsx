@@ -8,6 +8,7 @@ import {
   X,
   Image as ImageIcon,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { useBaizeChat } from "../hooks/use-baize-chat";
 
 interface ChatProps {
@@ -65,7 +66,11 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
 
   const renderMessageContent = (msg: any) => {
     if (typeof msg.content === "string") {
-      return <div>{msg.content}</div>;
+      return (
+        <div className="prose prose-sm max-w-none dark:prose-invert">
+          <ReactMarkdown>{msg.content}</ReactMarkdown>
+        </div>
+      );
     }
     if (Array.isArray(msg.content)) {
       const toolCallParts = msg.content.filter(
@@ -157,7 +162,14 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
               );
             }
             if (part.type === "text") {
-              return <div key={`text-${idx}`}>{part.text}</div>;
+              return (
+                <div
+                  key={`text-${idx}`}
+                  className="prose prose-sm max-w-none dark:prose-invert"
+                >
+                  <ReactMarkdown>{part.text}</ReactMarkdown>
+                </div>
+              );
             }
             return null;
           })}
