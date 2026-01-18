@@ -3,6 +3,8 @@ import {
   Send,
   Settings as SettingsIcon,
   Loader2,
+  Play,
+  Volume2,
   Paperclip,
   Terminal,
   X,
@@ -10,6 +12,8 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useBaizeChat } from "../hooks/use-baize-chat";
+import { VoiceControl } from "./VoiceControl";
+import { elevenLabsService } from "../lib/elevenlabs";
 
 interface ChatProps {
   onOpenSettings: () => void;
@@ -25,6 +29,9 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
     config,
   } = useBaizeChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -35,6 +42,41 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleVoiceTranscription = (text: string) => {
+    // Set the transcribed text to input
+    handleInputChange({ target: { value: text } } as any);
+  };
+
+  const handlePlayMessage = async (text: string, index: number) => {
+    if (playingMessageIndex === index) {
+      return; // Already playing
+    }
+
+    try {
+      setPlayingMessageIndex(index);
+      const audioBlob = await elevenLabsService.textToSpeech({ text });
+      await elevenLabsService.playAudio(audioBlob);
+    } catch (error) {
+      console.error("TTS error:", error);
+      alert("Failed to play audio");
+    } finally {
+      setPlayingMessageIndex(null);
+    }
+  };
+
+  const extractTextFromMessage = (msg: any): string => {
+    if (typeof msg.content === "string") {
+      return msg.content;
+    }
+    if (Array.isArray(msg.content)) {
+      return msg.content
+        .filter((part: any) => part.type === "text")
+        .map((part: any) => part.text)
+        .join(" ");
+    }
+    return "";
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -276,17 +318,58 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
             style={{
               alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
               maxWidth: "85%",
-              padding: "12px",
-              borderRadius: "12px",
-              backgroundColor:
-                msg.role === "user"
-                  ? "var(--chat-bg-user)"
-                  : "var(--chat-bg-ai)",
-              color: msg.role === "user" ? "white" : "var(--text-color)",
-              border: "1px solid transparent",
             }}
           >
-            {renderMessageContent(msg)}
+            <div
+              style={{
+                padding: "12px",
+                borderRadius: "12px",
+                backgroundColor:
+                  msg.role === "user"
+                    ? "var(--chat-bg-user)"
+                    : "var(--chat-bg-ai)",
+                color: msg.role === "user" ? "white" : "var(--text-color)",
+                border: "1px solid transparent",
+              }}
+            >
+              {renderMessageContent(msg)}
+            </div>
+            {/* Play button for assistant messages */}
+            {msg.role === "assistant" && (
+              <button
+                onClick={() =>
+                  handlePlayMessage(extractTextFromMessage(msg), idx)
+                }
+                disabled={playingMessageIndex === idx}
+                style={{
+                  marginTop: "4px",
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-color)",
+                  cursor:
+                    playingMessageIndex === idx ? "not-allowed" : "pointer",
+                  opacity: playingMessageIndex === idx ? 0.6 : 0.7,
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "12px",
+                }}
+                title="Play audio"
+              >
+                {playingMessageIndex === idx ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    Playing...
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={14} />
+                    Play
+                  </>
+                )}
+              </button>
+            )}
           </div>
         ))}
         <div ref={messagesEndRef} />
@@ -399,6 +482,7 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
               }}
               disabled={isLoading}
             />
+            <VoiceControl onTranscription={handleVoiceTranscription} />
             <button
               type="submit"
               disabled={
@@ -409,8 +493,9 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                 color: "white",
                 border: "none",
                 borderRadius: "8px",
-                padding: "0 12px",
-                height: "44px",
+                padding: "8px",
+                width: "40px",
+                height: "40px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -418,6 +503,10 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                   isLoading || (!input.trim() && attachments.length === 0)
                     ? 0.6
                     : 1,
+                cursor:
+                  isLoading || (!input.trim() && attachments.length === 0)
+                    ? "not-allowed"
+                    : "pointer",
               }}
             >
               {isLoading ? (
