@@ -447,7 +447,11 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
                   <textarea
                     ref={textAreaRef}
                     value={input}
-                    onChange={handleInputChange}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as unknown as React.ChangeEvent<HTMLInputElement>,
+                      )
+                    }
                     onKeyDown={handleMultiLineKeyDown}
                     placeholder={t("chat.placeholder")}
                     className={`input-field input-field--multiline${

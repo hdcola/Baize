@@ -30,7 +30,7 @@
   --input-bg: #fdf6ec;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --page-bg: #12100e;
     --surface: #1b1814;
@@ -79,7 +79,7 @@
   .prompt-chip {
     background: var(--surface-2);
   }
-}
+} */
 
 * {
   box-sizing: border-box;
