@@ -5,6 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "../locales/en.json";
 import zh from "../locales/zh.json";
 import fr from "../locales/fr.json";
+import zhTw from "../locales/zh-tw.json";
 
 // Config storage for language detector
 const languageDetectorOptions = {
@@ -24,6 +25,7 @@ i18n
       en: { translation: en },
       zh: { translation: zh },
       fr: { translation: fr },
+      zhTw: { translation: zhTw },
     },
     fallbackLng: "en",
     interpolation: {

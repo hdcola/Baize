@@ -1,0 +1,56 @@
+{
+  "common": {
+    "beta": "測試版",
+    "save": "儲存",
+    "cancel": "取消",
+    "back": "返回",
+    "setup": "設定"
+  },
+  "chat": {
+    "welcome": "歡迎使用 MatePI",
+    "configureMsg": "請設定您的 AI 服務供應商以開始使用。",
+    "goToSettings": "前往設定",
+    "startSession": "開始會話",
+    "startSubtitle": "選擇一個提示或描述您希望 MatePI 處理的內容。",
+    "placeholder": "讓 MatePI 做點什麼...",
+    "toolCall": "工具呼叫",
+    "playAudio": "播放音訊",
+    "playing": "播放中...",
+    "play": "播放",
+    "prompts": {
+      "summary": "總結目前頁面",
+      "actionItems": "擷取關鍵行動項",
+      "reply": "草擬對文章的回覆",
+      "studyNotes": "將此轉換為學習筆記"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "sections": {
+      "general": "一般",
+      "ai": "AI 服務",
+      "voice": "語音"
+    },
+    "labels": {
+      "language": "語言",
+      "apiKey": "API 金鑰",
+      "baseUrl": "基礎 URL",
+      "model": "模型",
+      "elevenLabsKey": "ElevenLabs API 金鑰",
+      "voiceId": "語音 ID"
+    },
+    "placeholders": {
+      "apiKey": "sk-...",
+      "baseUrl": "https://api.openai.com/v1",
+      "elevenLabsKey": "輸入您的 API 金鑰",
+      "voiceId": "輸入語音 ID"
+    },
+    "save": "儲存設定",
+    "saved": "設定已儲存！"
+  },
+  "voice": {
+    "start": "開始錄音",
+    "stop": "停止錄音",
+    "transcribing": "轉錄中..."
+  }
+}

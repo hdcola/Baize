@@ -115,6 +115,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                 <option value="en">English</option>
                 <option value="zh">Chinese (Simplified)</option>
                 <option value="fr">French</option>
+                <option value="zhTw">Chinese (Traditional)</option>
               </select>
               <ChevronDown size={16} className="field-icon" />
             </div>
