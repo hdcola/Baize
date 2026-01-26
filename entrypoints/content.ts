@@ -9,11 +9,12 @@ export default defineContentScript({
       if (request.type === "GET_PAGE_CONTENT") {
         (async () => {
           try {
-            const { default: TurndownService } = await import("turndown");
-            const turndownService = new TurndownService();
-            const markdown = turndownService.turndown(document.body);
+            // const { default: TurndownService } = await import("turndown");
+            // const turndownService = new TurndownService();
+            // const markdown = turndownService.turndown(document.body);
+
             sendResponse({
-              content: markdown,
+              content: document.body,
               title: document.title,
               url: window.location.href,
             });
@@ -23,7 +24,7 @@ export default defineContentScript({
               content: fallback,
               title: document.title,
               url: window.location.href,
-              error: `Turndown failed: ${e.message}`,
+              error: `Error: ${e.message}`,
             });
           }
         })();

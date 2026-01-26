@@ -15,6 +15,7 @@ export function useBaizeChat() {
     language: string;
   } | null>(null);
 
+  console.log(messages);
   useEffect(() => {
     if (typeof chrome !== "undefined" && chrome.storage) {
       chrome.storage.local.get(
@@ -89,6 +90,42 @@ export function useBaizeChat() {
           messages: [...messages, userMessage] as any,
           tools: tools,
           stopWhen: stepCountIs(5),
+          onStepFinish({
+            text,
+            toolCalls,
+            toolResults,
+            finishReason,
+            usage,
+          }: any) {
+            console.log(toolResults);
+            if (!toolResults || toolResults.length === 0) return;
+
+            const normalizeToolOutput = (output: any) => {
+              if (
+                output &&
+                typeof output === "object" &&
+                "type" in output &&
+                "value" in output
+              ) {
+                return output;
+              }
+              return typeof output === "string"
+                ? { type: "text", value: output }
+                : { type: "json", value: output ?? null };
+            };
+
+            const toolModelMessage = {
+              role: "tool",
+              content: toolResults.map((tr: any) => ({
+                type: "tool-result",
+                toolCallId: tr.toolCallId,
+                toolName: tr.toolName,
+                output: normalizeToolOutput(tr.output ?? tr.result),
+              })),
+            };
+
+            setMessages((prev) => [...prev, toolModelMessage]);
+          },
         } as any);
 
         let accumulatedText = "";
@@ -107,31 +144,35 @@ export function useBaizeChat() {
 
           setMessages((prev) => {
             const newMessages = [...prev];
-            const lastMsg = newMessages[newMessages.length - 1];
-            // Ensure we are updating the last assistant message we added
-            if (lastMsg.role === "assistant") {
-              if (Object.keys(toolCalls).length > 0) {
-                const contentParts: any[] = [];
-                if (accumulatedText)
-                  contentParts.push({ type: "text", text: accumulatedText });
-                Object.values(toolCalls).forEach((tc) => {
-                  contentParts.push({
-                    type: "tool-call",
-                    toolCallId: tc.toolCallId,
-                    toolName: tc.toolName,
-                    input: tc.input,
-                  });
+            const reverseIndex = [...newMessages]
+              .reverse()
+              .findIndex((msg) => msg.role === "assistant");
+            if (reverseIndex === -1) return newMessages;
+
+            const assistantIndex = newMessages.length - 1 - reverseIndex;
+            const assistantMsg = newMessages[assistantIndex];
+
+            if (Object.keys(toolCalls).length > 0) {
+              const contentParts: any[] = [];
+              if (accumulatedText)
+                contentParts.push({ type: "text", text: accumulatedText });
+              Object.values(toolCalls).forEach((tc) => {
+                contentParts.push({
+                  type: "tool-call",
+                  toolCallId: tc.toolCallId,
+                  toolName: tc.toolName,
+                  input: tc.input,
                 });
-                newMessages[newMessages.length - 1] = {
-                  ...lastMsg,
-                  content: contentParts,
-                };
-              } else {
-                newMessages[newMessages.length - 1] = {
-                  ...lastMsg,
-                  content: accumulatedText,
-                };
-              }
+              });
+              newMessages[assistantIndex] = {
+                ...assistantMsg,
+                content: contentParts,
+              };
+            } else {
+              newMessages[assistantIndex] = {
+                ...assistantMsg,
+                content: accumulatedText,
+              };
             }
             return newMessages;
           });

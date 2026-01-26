@@ -257,6 +257,13 @@ export const Chat: React.FC<ChatProps> = ({ onOpenSettings }) => {
       const otherParts = msg.content.filter(
         (part: any) => part.type !== "tool-call",
       );
+      const hasRenderableContent =
+        toolCallParts.length > 0 ||
+        otherParts.some(
+          (part: any) => part.type === "text" || part.type === "image",
+        );
+
+      if (!hasRenderableContent) return null;
       return (
         <div className="message-stack">
           {toolCallParts.map((part: any, idx: number) => (
